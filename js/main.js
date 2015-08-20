@@ -4,17 +4,31 @@ var localPeerConnection, sendChannel;
 
 var btnSend = document.getElementById('btn-send');
 var btnVideoStop = document.getElementById('btn-video-stop');
+var btnVideoStart = document.getElementById('btn-video-start');
+var btnVideoJoin = document.getElementById('btn-video-join');
 var localVideo = document.getElementById('local-video');
 var localStream;
+
+var divLocalVideo = document.getElementById('local-video');
+var divRemoteVideo = document.getElementById('remote-video');
+
 btnVideoStop.onclick = function(){
     if(localStream != null){
         localStream.stop();
     }
 }
+btnVideoStart.onclick = function(){
+    // initiate/offering a call
+    createConnection(true);
+}
 
-var divLocalVideo = document.getElementById('local-video');
-var divRemoteVideo = document.getElementById('remote-video');
+btnVideoJoin.onclick = function(){
+    // just joining a call, not offering
+    createConnection(false);
+}
 
+
+// WEBRTC STUFF STARTS HERE
 // Set objects as most are currently prefixed
 window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || 
                        window.webkitRTCPeerConnection || window.msRTCPeerConnection;
@@ -57,8 +71,6 @@ function createConnection(localIsCaller){
     
     // create local data channel, send it to remote
     navigator.getUserMedia({ video: true }, function(stream){
-        //!!! do something with stream here
-
         // add local stream
         localPeerConnection.addStream(stream);
         localStream = stream;
@@ -99,11 +111,6 @@ function errorHandler(error){
     console.error(error);
 }
 
-function init(){
-    createConnection(true);
-}
-
 function trace(text){
     console.info(text)
 }
-init();
