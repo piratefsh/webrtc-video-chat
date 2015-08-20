@@ -25,6 +25,12 @@ io.sockets.on('connection', function (socket){
 		socket.to(data.room).emit('sdp received', data.sdp);
 	});
 
+	// when receive ice candidate, broadcast sdp to other user
+	socket.on('ice candidate', function(data){
+		console.log('Received ICE candidate from ' + socket.id + ' ' + data.candidate);
+		socket.to(data.room).emit('ice candidate received', data.candidate);
+	});
+
 	socket.on('message', function (message) {
 		log('Got message:', message);
     // for a real app, would be room only (not broadcast)

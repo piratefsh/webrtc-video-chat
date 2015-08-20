@@ -27,6 +27,12 @@ var SignallingServer = function(room, socketServer){
         this.onReceiveSdp(sdp);
     }.bind(this));
 
+    this.socket.on('ice candidate received', function(candidate){
+        console.log('Received ICE candidate ');
+        console.log(candidate);
+        this.onReceiveICECandidate(candidate);
+    }.bind(this));
+
     this.socket.on('log', function (array){
       console.log.apply(console, array);
     });
@@ -46,11 +52,21 @@ SignallingServer.prototype = {
             sdp: sdp
         });
     },
+    sendICECandidate: function(candidate){
+        console.log('sending ice candidate');
+        this.socket.emit('ice candidate', {
+            room: this.room,
+            candidate: candidate
+        });
+    },
     onReceiveSdp: function(sdp){
         console.log('Placeholder function: Received SDP')
     },
     onGuestJoined: function(){
         console.log('Placeholder function: Guest joined room')
+    },
+    onReceiveICECandidate: function(candidate){
+        console.log('Placeholder function: Received ICE candidate')
     }
 }
 

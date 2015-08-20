@@ -7,10 +7,8 @@ var btnVideoStop = document.getElementById('btn-video-stop');
 var btnVideoStart = document.getElementById('btn-video-start');
 var btnVideoJoin = document.getElementById('btn-video-join');
 var localVideo = document.getElementById('local-video');
+var remoteVideo = document.getElementById('remote-video');
 var localStream;
-
-var divLocalVideo = document.getElementById('local-video');
-var divRemoteVideo = document.getElementById('remote-video');
 
 btnVideoStop.onclick = function(){
     if(localStream != null){
@@ -85,7 +83,7 @@ function createConnection(localIsCaller){
         else{
             trace('set remote session desc with offer');
             localPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp), function(){
-                trace('make answer');
+                trace('make answer')
                 localPeerConnection.createAnswer(function(sessionDescription){
                     // set local description
                     trace('set local session desc with answer');
@@ -98,20 +96,25 @@ function createConnection(localIsCaller){
         }
     }
 
+    // when received ICE candidate
+    signallingServer.onReceiveICECandidate = function(candidate){
+        trace('Set remote ice candidate');
+        localPeerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    }
+
     // get ice candidates and send them over
     // wont get called unless SDP has been exchanged
     localPeerConnection.onicecandidate = function(event){
         if(event.candidate){
             //!!! send ice candidate over via signalling channel
-            //trace(event.candidate.candidate)
+            trace("Sending candidate");
+            signallingServer.sendICECandidate(event.candidate);
         }
     }
 
     // when stream is added to connection, put it in video src
     localPeerConnection.onaddstream = function(data){
-        var video = document.createElement("video");
-        video.src = URL.createObjectURL(data.stream);
-        divRemoteVideo.appendChild(video);
+        remoteVideo.src = window.URL.createObjectURL(data.stream);
     }
     
     // create local data channel, send it to remote

@@ -43,7 +43,7 @@
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
           <div class="container">
             <div class="navbar-header">
-              <a class="navbar-brand" href="#">WebRTC Chat</a>
+              <a class="navbar-brand" href="#">WebRTC</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse"></div>
             <!--/.navbar-collapse --> </div>
@@ -52,22 +52,24 @@
         <!-- Main jumbotron for a primary marketing message or call to action -->
 
         <div class="container">
-          <h1>Hello world!</h1>
+          <h1>Video Chat!</h1>
 
-          <h2>Chat</h2>
           <div class="row">
-            <div class="col-md-6">
-              <button id="btn-video-start">Start</button>
-              <button id="btn-video-stop">Stop</button>
-              <button id="btn-video-join">Join</button>
+            <div class="col-sm-6">
+              <button class="btn btn-primary" id="btn-video-start">Start</button>
+              <button class="btn btn-default"  id="btn-video-join">Join</button>
+              <button class="btn btn-default"  id="btn-video-stop">Stop</button>
               <h3>Local Video</h3>
               <div id="local-video-container">
                 <video width="450" height="300" autoplay="true" id="local-video"></video>
               </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-sm-6">
               <h3>Remote Video</h3>
-              <div id="remote-video"></div>
+              <div id="remote-video-container">
+                <video width="450" height="300" autoplay="true" id="remote-video"></video>
+                
+              </div>
             </div>
           </div>
         </div>
