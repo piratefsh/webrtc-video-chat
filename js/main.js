@@ -1,6 +1,6 @@
 "use strict"
 
-var localPeerConnection, sendChannel;
+var localPeerConnection, signallingServer;
 
 var btnSend = document.getElementById('btn-send');
 var btnVideoStop = document.getElementById('btn-video-stop');
@@ -36,7 +36,7 @@ window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSess
                        window.webkitRTCSessionDescription || window.msRTCSessionDescription;
 navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia ||
                        navigator.webkitGetUserMedia || navigator.msGetUserMedia;
-
+window.SignallingServer = window.SignallingServer;
 // RTCPeerConnection Options
 var server = {
     // User Google's STUN server
@@ -54,12 +54,52 @@ function createConnection(localIsCaller){
     // create peer connection
     localPeerConnection = new RTCPeerConnection(server);
 
+
+    // create signalling server
+    signallingServer = new SignallingServer("chat", "http://localhost:2013");
+    signallingServer.connect();
+
+    // a remote peer has joined room, initiate sdp exchange
+    signallingServer.onGuestJoined = function(){
+        // set local description and send to remote
+        localPeerConnection.createOffer(function(sessionDescription){
+            trace('local session desc: ');
+            trace(sessionDescription.sdp);
+            localPeerConnection.setLocalDescription(sessionDescription);
+            
+            //!!! send local sdp to remote
+            signallingServer.sendSDP(sessionDescription);
+        });
+    }
+    // got sdp from remote
+    signallingServer.onReceiveSdp = function(sdp){
+        // if local was the caller, set remote desc
+        if(localIsCaller){
+            trace('is caller');
+            localPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
+            
+        }
+        // if local is joining a call, set remote sdp and create answer
+        else{
+            localPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp), function(){
+
+                localPeerConnection.createAnswer(function(sessionDescription){
+                    // set local description
+                    localPeerConnection.setLocalDescription(sessionDescription);
+
+                    //!!! send local sdp to remote too
+                    signallingServer.sendSDP(sessionDescription);
+                });
+            });
+        }
+    }
+
     // get ice candidates and send them over
     // wont get called unless SDP has been exchanged
     localPeerConnection.onicecandidate = function(event){
         if(event.candidate){
             //!!! send ice candidate over via signalling channel
-            trace(event.candidate.candidate)
+            //trace(event.candidate.candidate)
         }
     }
 
@@ -79,32 +119,7 @@ function createConnection(localIsCaller){
         // show local video
         localVideo.src = window.URL.createObjectURL(stream);
 
-        // send video over
-        // if local is caller, then create offer
-        if(localIsCaller){
-            localPeerConnection.createOffer(function(sessionDescription){
-                // set local description
-                trace('session desc')
-                trace(sessionDescription.sdp)
-                localPeerConnection.setLocalDescription(sessionDescription);
-                
-                //!!! send local sdp to remote
-            });
-        }
-        // if local is joining a call, create answer instead
-        else{
-            localPeerConnection.createAnswer(localPeerConnection.remoteDescription, function(sessionDescription){
-                // set local description
-                localPeerConnection.setLocalDescription(sessionDescription);
-
-                //!!! send local sdp to remote too
-            });
-        }
     }, errorHandler)
-
-    sendChannel = localPeerConnection.createDataChannel('sendDataChannel', {
-        reliable: false
-    });
 }
 
 function errorHandler(error){

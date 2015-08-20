@@ -19,6 +19,12 @@ io.sockets.on('connection', function (socket){
 	    socket.emit('log', array);
 	}
 
+	// when receive sdp, broadcast sdp to other user
+	socket.on('sdp', function(data){
+		console.log('Received SDP from ' + socket.id);
+		socket.to(data.room).emit('sdp received', data.sdp);
+	});
+
 	socket.on('message', function (message) {
 		log('Got message:', message);
     // for a real app, would be room only (not broadcast)
@@ -49,7 +55,7 @@ io.sockets.on('connection', function (socket){
 	});
 
 	socket.on('error', function(error){
-		log('Error: ' + error)
+		console.error(error);
 	})
 
 });
