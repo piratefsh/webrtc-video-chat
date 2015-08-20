@@ -15,9 +15,6 @@ btnVideoStop.onclick = function(){
 var divLocalVideo = document.getElementById('local-video');
 var divRemoteVideo = document.getElementById('remote-video');
 
-// Call initiator flag
-var localIsCaller = true;
-
 // Set objects as most are currently prefixed
 window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || 
                        window.webkitRTCPeerConnection || window.msRTCPeerConnection;
@@ -38,7 +35,7 @@ var sdpConstraints = {
     }
 }
 
-function createConnection(){
+function createConnection(localIsCaller){
     // create peer connection
     localPeerConnection = new RTCPeerConnection(server);
 
@@ -46,7 +43,8 @@ function createConnection(){
     // wont get called unless SDP has been exchanged
     localPeerConnection.onicecandidate = function(event){
         if(event.candidate){
-            //!!! send ice candidate
+            //!!! send ice candidate over via signalling channel
+            trace(event.candidate.candidate)
         }
     }
 
@@ -58,7 +56,7 @@ function createConnection(){
     }
     
     // create local data channel, send it to remote
-     navigator.getUserMedia({ video: true }, function(stream){
+    navigator.getUserMedia({ video: true }, function(stream){
         //!!! do something with stream here
 
         // add local stream
@@ -96,16 +94,13 @@ function createConnection(){
     });
 }
 
-//!!! wait for remote signalling 
-
-
 function errorHandler(error){
     console.error('Something went wrong!');
     console.error(error);
 }
 
 function init(){
-    createConnection();
+    createConnection(true);
 }
 
 function trace(text){
