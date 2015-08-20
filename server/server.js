@@ -36,15 +36,15 @@ io.sockets.on('connection', function (socket){
 
 		if(clients.length == 0){
 			socket.join(room);
-			io.to(room).emit('log', ['Room ' + room + ' created!']);
+			io.to(room).emit('empty', room);
 		}
 		else if(clients.length == 1){
 			socket.join(room);
-			io.to(room).emit('log', ['New user joined the room!', 
-				'There are ' + clients.length + ' in the room.']);
+			io.to(room).emit('joined', room, clients.length + 1);
 		}
+		// only allow 2 users max per room
 		else{
-			socket.emit('log', ['Sorry, room is full!']);
+			socket.emit('full');
 		}
 	});
 

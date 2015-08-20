@@ -37,7 +37,11 @@ socket.on('empty', function (room){
 
 socket.on('join', function (room){
   console.log('Making request to join room ' + room);
-  console.log('You are the initiator!');
+});
+
+socket.on('joined', function (room, numClients){
+  console.log('New user has joined ' + room);
+  console.log('Room has ' + numClients + ' clients');
 });
 
 socket.on('log', function (array){
