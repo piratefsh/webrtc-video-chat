@@ -52,23 +52,27 @@
         <!-- Main jumbotron for a primary marketing message or call to action -->
 
         <div class="container">
-          <h1>Video Chat!</h1>
-
           <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
+              <h1>Video Chat!</h1>
               <button class="btn btn-primary" id="btn-video-start">Start</button>
               <button class="btn btn-default"  id="btn-video-join">Join</button>
               <button class="btn btn-default"  id="btn-video-stop">Stop</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
               <h3>Local Video</h3>
               <div id="local-video-container">
-                <video width="450" height="300" autoplay="true" id="local-video"></video>
+                <video width="350" height="280" autoplay="true" id="local-video"></video>
               </div>
             </div>
             <div class="col-sm-6">
               <h3>Remote Video</h3>
               <div id="remote-video-container">
-                <video width="450" height="300" autoplay="true" id="remote-video"></video>
-                
+                <video width="350" height="280" autoplay="true" id="remote-video"></video>
+
               </div>
             </div>
           </div>
