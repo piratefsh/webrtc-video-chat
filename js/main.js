@@ -27,16 +27,15 @@ btnVideoJoin.onclick = function(){
     createConnection(false);
 }
 
-
 // WEBRTC STUFF STARTS HERE
 // Set objects as most are currently prefixed
-window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || 
-                       window.webkitRTCPeerConnection || window.msRTCPeerConnection;
-window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription ||
-                       window.webkitRTCSessionDescription || window.msRTCSessionDescription;
-navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia ||
-                       navigator.webkitGetUserMedia || navigator.msGetUserMedia;
-window.SignallingServer = window.SignallingServer;
+window.RTCPeerConnection        = window.RTCPeerConnection || window.mozRTCPeerConnection || 
+                                    window.webkitRTCPeerConnection || window.msRTCPeerConnection;
+window.RTCSessionDescription    = window.RTCSessionDescription || window.mozRTCSessionDescription ||
+                                    window.webkitRTCSessionDescription || window.msRTCSessionDescription;
+navigator.getUserMedia          = navigator.getUserMedia || navigator.mozGetUserMedia ||
+                                    navigator.webkitGetUserMedia || navigator.msGetUserMedia;
+window.SignallingServer         = window.SignallingServer;
 // RTCPeerConnection Options
 var server = {
     // User Google's STUN server
@@ -59,32 +58,37 @@ function createConnection(localIsCaller){
     signallingServer = new SignallingServer("chat", "http://localhost:2013");
     signallingServer.connect();
 
+
     // a remote peer has joined room, initiate sdp exchange
     signallingServer.onGuestJoined = function(){
+        trace('guest joined!')
         // set local description and send to remote
         localPeerConnection.createOffer(function(sessionDescription){
-            trace('local session desc: ');
-            trace(sessionDescription.sdp);
+            trace('set local session desc with offer');
+
             localPeerConnection.setLocalDescription(sessionDescription);
             
             //!!! send local sdp to remote
             signallingServer.sendSDP(sessionDescription);
         });
     }
+
     // got sdp from remote
     signallingServer.onReceiveSdp = function(sdp){
         // if local was the caller, set remote desc
         if(localIsCaller){
             trace('is caller');
+            trace('set remote session desc with answer');
             localPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
-            
         }
         // if local is joining a call, set remote sdp and create answer
         else{
+            trace('set remote session desc with offer');
             localPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp), function(){
-
+                trace('make answer');
                 localPeerConnection.createAnswer(function(sessionDescription){
                     // set local description
+                    trace('set local session desc with answer');
                     localPeerConnection.setLocalDescription(sessionDescription);
 
                     //!!! send local sdp to remote too

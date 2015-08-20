@@ -46,7 +46,7 @@ io.sockets.on('connection', function (socket){
 		}
 		else if(clients.length == 1){
 			socket.join(room);
-			io.to(room).emit('joined', room, clients.length + 1);
+			socket.to(room).emit('joined', room, clients.length + 1);
 		}
 		// only allow 2 users max per room
 		else{
