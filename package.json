@@ -11,6 +11,11 @@
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-serve": "^0.1.6"
+    "grunt-serve": "^0.1.6",
+    "node-static": "^0.7.7"
+  },
+  "dependencies": {
+    "node-static": "^0.7.7",
+    "socket.io": "^1.3.6"
   }
 }

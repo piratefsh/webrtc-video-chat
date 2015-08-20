@@ -39,6 +39,7 @@ navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia ||
 
 // RTCPeerConnection Options
 var server = {
+    // User Google's STUN server
     iceServers: [{"url": "stun:stun.l.google.com:19302"}]
 };
 
@@ -97,7 +98,7 @@ function createConnection(localIsCaller){
                 localPeerConnection.setLocalDescription(sessionDescription);
 
                 //!!! send local sdp to remote too
-            })
+            });
         }
     }, errorHandler)
 
@@ -112,5 +113,5 @@ function errorHandler(error){
 }
 
 function trace(text){
-    console.info(text)
+    console.info(text);
 }
