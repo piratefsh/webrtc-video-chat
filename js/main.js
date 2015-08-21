@@ -21,6 +21,8 @@ btnVideoStop.onclick = function(){
         localPeerConnection.removeStream(localStream);
         localPeerConnection.close();
         signallingServer.close();
+        localVideo.src = "";
+        remoteVideo.src = "";
     }
 }
 
