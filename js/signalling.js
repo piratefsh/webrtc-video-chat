@@ -45,6 +45,10 @@ SignallingServer.prototype = {
           this.socket.emit('create or join', this.room);
         }
     },
+    close: function(){
+        console.log('Disconnecting')
+        this.socket.disconnect();
+    },
     sendSDP: function(sdp){
         console.log('sending sdp')
         this.socket.emit('sdp', {

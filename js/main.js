@@ -11,8 +11,16 @@ var remoteVideo = document.getElementById('remote-video');
 var localStream, localIsCaller;
 
 btnVideoStop.onclick = function(){
+    // stop video stream
     if(localStream != null){
         localStream.stop();
+    }
+
+    // kill all connections
+    if(localPeerConnection != null){
+        localPeerConnection.removeStream(localStream);
+        localPeerConnection.close();
+        signallingServer.close();
     }
 }
 
@@ -27,6 +35,7 @@ btnVideoJoin.onclick = function(){
     localIsCaller = false;
     connect(localIsCaller);
 }
+
 
 // WEBRTC STUFF STARTS HERE
 // Set objects as most are currently prefixed
