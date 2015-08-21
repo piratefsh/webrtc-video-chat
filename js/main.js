@@ -8,21 +8,24 @@ var btnVideoStart = document.getElementById('btn-video-start');
 var btnVideoJoin = document.getElementById('btn-video-join');
 var localVideo = document.getElementById('local-video');
 var remoteVideo = document.getElementById('remote-video');
-var localStream;
+var localStream, localIsCaller;
 
 btnVideoStop.onclick = function(){
     if(localStream != null){
         localStream.stop();
     }
 }
+
 btnVideoStart.onclick = function(){
     // initiate/offering a call
-    createConnection(true);
+    localIsCaller = true;
+    connect(localIsCaller);
 }
 
 btnVideoJoin.onclick = function(){
     // just joining a call, not offering
-    createConnection(false);
+    localIsCaller = false;
+    connect(localIsCaller);
 }
 
 // WEBRTC STUFF STARTS HERE
@@ -34,6 +37,7 @@ window.RTCSessionDescription    = window.RTCSessionDescription || window.mozRTCS
 navigator.getUserMedia          = navigator.getUserMedia || navigator.mozGetUserMedia ||
                                     navigator.webkitGetUserMedia || navigator.msGetUserMedia;
 window.SignallingServer         = window.SignallingServer;
+
 // RTCPeerConnection Options
 var server = {
     // User Google's STUN server
@@ -47,13 +51,32 @@ var sdpConstraints = {
     }
 }
 
-function createConnection(localIsCaller){
+function connect(){
     // create peer connection
     localPeerConnection = new RTCPeerConnection(server);
 
+    // create local data channel, send it to remote
+    navigator.getUserMedia({ video: true }, function(stream){
+        // get and save local stream
+        trace('Got stream, saving it now and starting RTC conn');
 
+        // must add before calling setRemoteDescription() because then 
+        // it triggers 'addstream' event
+        localPeerConnection.addStream(stream);
+        localStream = stream;
+
+        // show local video
+        localVideo.src = window.URL.createObjectURL(stream);
+
+        // can start once have gotten local video
+        establishRTCConnection(localIsCaller);
+
+    }, errorHandler)
+}
+
+function establishRTCConnection(){
     // create signalling server
-    signallingServer = new SignallingServer("chat", "http://localhost:2013");
+    signallingServer = new SignallingServer("chat", "http://10.0.11.196:2013");
     signallingServer.connect();
 
 
@@ -66,7 +89,7 @@ function createConnection(localIsCaller){
 
             localPeerConnection.setLocalDescription(sessionDescription);
             
-            //!!! send local sdp to remote
+            // send local sdp to remote
             signallingServer.sendSDP(sessionDescription);
         });
     }
@@ -89,7 +112,7 @@ function createConnection(localIsCaller){
                     trace('set local session desc with answer');
                     localPeerConnection.setLocalDescription(sessionDescription);
 
-                    //!!! send local sdp to remote too
+                    // send local sdp to remote too
                     signallingServer.sendSDP(sessionDescription);
                 });
             });
@@ -117,16 +140,6 @@ function createConnection(localIsCaller){
         remoteVideo.src = window.URL.createObjectURL(data.stream);
     }
     
-    // create local data channel, send it to remote
-    navigator.getUserMedia({ video: true }, function(stream){
-        // add local stream
-        localPeerConnection.addStream(stream);
-        localStream = stream;
-
-        // show local video
-        localVideo.src = window.URL.createObjectURL(stream);
-
-    }, errorHandler)
 }
 
 function errorHandler(error){
