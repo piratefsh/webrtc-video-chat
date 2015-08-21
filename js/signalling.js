@@ -10,7 +10,8 @@ var SignallingServer = function(room, socketServer){
     this.socket = io.connect(socketServer);
     this.socket.on('full', function (room){
       trace('Room ' + room + ' is full');
-    });
+      this.onRoomFull(room);
+    }.bind(this));
 
     this.socket.on('empty', function (room){
       isInitiator = true;
@@ -78,6 +79,9 @@ SignallingServer.prototype = {
     },
     onReceiveICECandidate: function(candidate){
         trace('Placeholder function: Received ICE candidate')
+    },
+    onRoomFull: function(room){
+        trace('Placeholder function: Room is full!');
     }
 }
 

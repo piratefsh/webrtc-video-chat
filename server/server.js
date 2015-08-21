@@ -56,7 +56,7 @@ io.sockets.on('connection', function (socket){
 		}
 		// only allow 2 users max per room
 		else{
-			socket.emit('full');
+			socket.emit('full', room);
 		}
 	});
 

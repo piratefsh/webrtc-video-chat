@@ -87,7 +87,8 @@ function connect(){
 
 function establishRTCConnection(){
     // create signalling server
-    var serverIP = "http://192.168.43.241:2013";
+    // var serverIP = "http://192.168.43.241:2013";
+    var serverIP = "http://10.0.11.196:2013";
     signallingServer = new SignallingServer("chat", serverIP);
     signallingServer.connect();
 
@@ -135,6 +136,11 @@ function establishRTCConnection(){
     signallingServer.onReceiveICECandidate = function(candidate){
         trace('Set remote ice candidate');
         localPeerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+    }
+
+    // when room is full, alert user
+    signallingServer.onRoomFull = function(room){
+        window.alert('Room "' + room + '"" is full! Please join or create another room');
     }
 
     // get ice candidates and send them over
