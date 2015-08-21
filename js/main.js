@@ -85,7 +85,8 @@ function connect(){
 
 function establishRTCConnection(){
     // create signalling server
-    signallingServer = new SignallingServer("chat", "http://10.0.11.196:2013");
+    var serverIP = "http://192.168.43.241:2013";
+    signallingServer = new SignallingServer("chat", serverIP);
     signallingServer.connect();
 
 
