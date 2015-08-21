@@ -8,9 +8,13 @@ var btnVideoStart = document.getElementById('btn-video-start');
 var btnVideoJoin = document.getElementById('btn-video-join');
 var localVideo = document.getElementById('local-video');
 var remoteVideo = document.getElementById('remote-video');
+
+var inputRoomName = document.getElementById('room-name');
+
 var localStream, localIsCaller;
 
-btnVideoStop.onclick = function(){
+btnVideoStop.onclick = function(e){
+    e.preventDefault();
     // stop video stream
     if(localStream != null){
         localStream.stop();
@@ -24,18 +28,40 @@ btnVideoStop.onclick = function(){
         localVideo.src = "";
         remoteVideo.src = "";
     }
+
+    btnVideoStart.disabled = false;
+    btnVideoJoin.disabled = false;
+    btnVideoStop.disabled = true;
 }
 
-btnVideoStart.onclick = function(){
-    // initiate/offering a call
+btnVideoStart.onclick = function(e){
+    e.preventDefault();
+    // is starting the call
     localIsCaller = true;
-    connect(localIsCaller);
+    initConnection();
 }
 
-btnVideoJoin.onclick = function(){
+btnVideoJoin.onclick = function(e){
+    e.preventDefault();
     // just joining a call, not offering
     localIsCaller = false;
-    connect(localIsCaller);
+    initConnection();
+}
+
+function initConnection(){
+    var room = inputRoomName.value;
+
+    if(room == undefined || room.length <= 0){
+        alert('Please enter room name');
+        return;
+    }
+
+    // start connection!
+    connect(room);
+
+    btnVideoStart.disabled = true;
+    btnVideoJoin.disabled = true;
+    btnVideoStop.disabled = false;
 }
 
 
@@ -62,7 +88,7 @@ var sdpConstraints = {
     }
 }
 
-function connect(){
+function connect(room){
     // create peer connection
     localPeerConnection = new RTCPeerConnection(server);
 
@@ -80,16 +106,16 @@ function connect(){
         localVideo.src = window.URL.createObjectURL(stream);
 
         // can start once have gotten local video
-        establishRTCConnection(localIsCaller);
+        establishRTCConnection(room);
 
     }, errorHandler)
 }
 
-function establishRTCConnection(){
+function establishRTCConnection(room){
     // create signalling server
     // var serverIP = "http://192.168.43.241:2013";
     var serverIP = "http://10.0.11.196:2013";
-    signallingServer = new SignallingServer("chat", serverIP);
+    signallingServer = new SignallingServer(room, serverIP);
     signallingServer.connect();
 
 

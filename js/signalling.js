@@ -14,8 +14,9 @@ var SignallingServer = function(room, socketServer){
     }.bind(this));
 
     this.socket.on('empty', function (room){
-      isInitiator = true;
+      this.isInitiator = true;
       trace('Room ' + room + ' is empty');
+      this.onRoomEmpty();
     });
 
     this.socket.on('join', function (room){
