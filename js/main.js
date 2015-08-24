@@ -105,7 +105,7 @@ function connect(room){
     localPeerConnection = new RTCPeerConnection(server);
 
     // create local data channel, send it to remote
-    navigator.getUserMedia({ video: true }, function(stream){
+    navigator.getUserMedia({ video: true, audio: true }, function(stream){
         // get and save local stream
         trace('Got stream, saving it now and starting RTC conn');
 
@@ -145,27 +145,32 @@ function establishRTCConnection(room){
 
     // got sdp from remote
     signallingServer.onReceiveSdp = function(sdp){
-        // if local was the caller, set remote desc
-        if(localIsCaller){
-            trace('is caller');
-            trace('set remote session desc with answer');
-            localPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
-        }
-        // if local is joining a call, set remote sdp and create answer
-        else{
-            trace('set remote session desc with offer');
-            localPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp), function(){
-                trace('make answer')
-                localPeerConnection.createAnswer(function(sessionDescription){
-                    // set local description
-                    trace('set local session desc with answer');
-                    localPeerConnection.setLocalDescription(sessionDescription);
+        // get stream again
+        navigator.getUserMedia({video:true, audio:true}, function(stream) {
+            localPeerConnection.addStream(stream);
 
-                    // send local sdp to remote too
-                    signallingServer.sendSDP(sessionDescription);
+            // if local was the caller, set remote desc
+            if(localIsCaller){
+                trace('is caller');
+                trace('set remote session desc with answer');
+                localPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
+            }
+            // if local is joining a call, set remote sdp and create answer
+            else{
+                trace('set remote session desc with offer');
+                localPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp), function(){
+                    trace('make answer')
+                    localPeerConnection.createAnswer(function(sessionDescription){
+                        // set local description
+                        trace('set local session desc with answer');
+                        localPeerConnection.setLocalDescription(sessionDescription);
+
+                        // send local sdp to remote too
+                        signallingServer.sendSDP(sessionDescription);
+                    });
                 });
-            });
-        }
+            }
+        });
     }
 
     // when received ICE candidate
