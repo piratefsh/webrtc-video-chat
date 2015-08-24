@@ -48,7 +48,13 @@ video{
 }
 
 
-
+@media (max-width: 768px){
+    .local-video{
+        margin: 0px;
+        width: 130px;
+        height: 80px;        
+    }
+}
 
 
 
