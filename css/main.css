@@ -17,6 +17,10 @@ body{
     flex: 1;
 }
 
+.navbar-form{
+    border: none;
+}
+
 video{
     background-color: black;
     width: 100%;
@@ -28,12 +32,12 @@ video{
     height: 100vh;
 }
 
-.local-video{
+.remote-video{
     height: 100%;
     position: relative;
 }
 
-.remote-video{
+.local-video{
     margin: 16px;
     position: absolute;
     width: 200px;
