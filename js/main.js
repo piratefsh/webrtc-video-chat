@@ -1,9 +1,16 @@
 "use strict"
 
 // config
-var serverIP = "http://192.168.43.241:2013";
-// var serverIP = "http://10.0.11.196:2013";
+
+// uncomment to use your locally running signalling server
 // var serverIP = "http://localhost:2013";
+
+//my signalling server
+var serverIP = "http://45.55.61.164:2013/"; 
+
+// various other development IPs
+// var serverIP = "http://192.168.43.241:2013";
+// var serverIP = "http://10.0.11.196:2013";
 
 var localPeerConnection, signallingServer;
 
@@ -175,6 +182,8 @@ function establishRTCConnection(room){
     // get ice candidates and send them over
     // wont get called unless SDP has been exchanged
     localPeerConnection.onicecandidate = function(event){
+        trace('heard back from stun')
+        trace(event)
         if(event.candidate){
             //!!! send ice candidate over via signalling channel
             trace("Sending candidate");
