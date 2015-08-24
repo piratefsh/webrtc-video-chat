@@ -5,12 +5,43 @@
    ========================================================================== */
 
 
+body{
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    padding: 0px 0px;
+    /*background-color: black;*/
+}
+
+.main, nav{
+    flex: 1;
+}
 
 video{
     background-color: black;
     width: 100%;
+    height: 100%;
 }
 
+.videos{
+    position: relative;
+    height: 100vh;
+}
+
+.local-video{
+    height: 100%;
+    position: relative;
+}
+
+.remote-video{
+    margin: 16px;
+    position: absolute;
+    width: 200px;
+    height: 150px;
+    right: 0px;
+    bottom: 0px;
+    border: 1px solid #777;
+}
 
 
 

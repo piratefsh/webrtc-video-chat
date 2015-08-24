@@ -40,53 +40,43 @@
           to improve your experience.
         </p>
         <![endif]-->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
           <div class="container">
             <div class="navbar-header">
-              <a class="navbar-brand" href="#">WebRTC</a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+              <a class="navbar-brand" href="#">WebRTC Video Chat</a>
             </div>
-            <div id="navbar" class="navbar-collapse collapse"></div>
-            <!--/.navbar-collapse --> </div>
-        </nav>
-
-        <!-- Main jumbotron for a primary marketing message or call to action -->
-
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <h1>Video Chat!</h1>
-              <form class="form-inline">
+            <div id="navbar" class="navbar-collapse collapse">
+              <!-- chatroom name form -->
+              <form class="navbar-form navbar-right form-inline">
                 <div class="form-group">
-                  <input class="form-control" type="text" id="room-name"/>
-                  <button class="btn btn-primary" id="btn-video-start">Start</button>
-                  <button class="btn btn-default"  id="btn-video-join">Join</button>
-                  <button class="btn btn-default"  disabled id="btn-video-stop">Stop</button>
+                  <input class="form-control" type="text" id="room-name" placeholder="Room name"/>
                 </div>
+                <button class="btn btn-primary" id="btn-video-start">Start</button>
+                <button class="btn btn-default"  id="btn-video-join">Join</button>
+                <button class="btn btn-default"  disabled id="btn-video-stop">Stop</button>
               </form>
             </div>
-          </div>
 
-          <div class="row">
-            <div class="col-xs-12 col-sm-6">
-              <h3>Local Video</h3>
-              <div id="local-video-container">
-                <video width="280" height="250" autoplay="true" id="local-video"></video>
-              </div>
+            <!--/.navbar-collapse --> </div>
+
+        </nav>
+
+        <div class="container main">
+          <div class="row videos">
+            <div class="local-video">
+              <video width="280" height="250" autoplay="true" id="local-video"></video>
             </div>
-            <div class="col-xs-12 col-sm-6">
-              <h3>Remote Video</h3>
-              <div id="remote-video-container">
-                <video width="280" height="250" autoplay="true" id="remote-video"></video>
-              </div>
+            <div class="remote-video">
+              <video width="280" height="250" autoplay="true" id="remote-video"></video>
             </div>
           </div>
         </div>
-
-        <hr>
-
-        <footer>
-          <p>&copy; Company 2015</p>
-        </footer>
       </div>
       <!-- /container -->
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
