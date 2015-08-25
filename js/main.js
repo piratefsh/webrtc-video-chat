@@ -91,7 +91,7 @@ window.SignallingServer = window.SignallingServer;
 var server = {
     // User Google's STUN server
     iceServers: [{
-        "url": "stun:stun.l.google.com:19302"
+        "url": "stun:45.55.61.164:3478"
     }, {
         'url': 'turn:45.55.61.164:3478?transport=udp',
     }, {
