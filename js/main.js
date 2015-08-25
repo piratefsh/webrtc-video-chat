@@ -6,7 +6,7 @@
 // var serverIP = "http://localhost:2013";
 
 //my signalling server
-var serverIP = "http://45.55.61.164:2013/"; 
+var serverIP = "http://45.55.61.164:2013/";
 
 // various other development IPs
 // var serverIP = "http://192.168.43.241:2013";
@@ -25,15 +25,15 @@ var inputRoomName = document.getElementById('room-name');
 
 var localStream, localIsCaller;
 
-btnVideoStop.onclick = function(e){
+btnVideoStop.onclick = function(e) {
     e.preventDefault();
     // stop video stream
-    if(localStream != null){
+    if (localStream != null) {
         localStream.stop();
     }
 
     // kill all connections
-    if(localPeerConnection != null){
+    if (localPeerConnection != null) {
         localPeerConnection.removeStream(localStream);
         localPeerConnection.close();
         signallingServer.close();
@@ -46,24 +46,24 @@ btnVideoStop.onclick = function(e){
     btnVideoStop.disabled = true;
 }
 
-btnVideoStart.onclick = function(e){
+btnVideoStart.onclick = function(e) {
     e.preventDefault();
     // is starting the call
     localIsCaller = true;
     initConnection();
 }
 
-btnVideoJoin.onclick = function(e){
+btnVideoJoin.onclick = function(e) {
     e.preventDefault();
     // just joining a call, not offering
     localIsCaller = false;
     initConnection();
 }
 
-function initConnection(){
+function initConnection() {
     var room = inputRoomName.value;
 
-    if(room == undefined || room.length <= 0){
+    if (room == undefined || room.length <= 0) {
         alert('Please enter room name');
         return;
     }
@@ -79,18 +79,24 @@ function initConnection(){
 
 // WEBRTC STUFF STARTS HERE
 // Set objects as most are currently prefixed
-window.RTCPeerConnection        = window.RTCPeerConnection || window.mozRTCPeerConnection || 
-                                    window.webkitRTCPeerConnection || window.msRTCPeerConnection;
-window.RTCSessionDescription    = window.RTCSessionDescription || window.mozRTCSessionDescription ||
-                                    window.webkitRTCSessionDescription || window.msRTCSessionDescription;
-navigator.getUserMedia          = navigator.getUserMedia || navigator.mozGetUserMedia ||
-                                    navigator.webkitGetUserMedia || navigator.msGetUserMedia;
-window.SignallingServer         = window.SignallingServer;
+window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection ||
+    window.webkitRTCPeerConnection || window.msRTCPeerConnection;
+window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription ||
+    window.webkitRTCSessionDescription || window.msRTCSessionDescription;
+navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia ||
+    navigator.webkitGetUserMedia || navigator.msGetUserMedia;
+window.SignallingServer = window.SignallingServer;
 
 // RTCPeerConnection Options
 var server = {
     // User Google's STUN server
-    iceServers: [{"url": "stun:stun.l.google.com:19302"}]
+    iceServers: [{
+        "url": "stun:stun.l.google.com:19302"
+    }, {
+        'url': 'turn:45.55.61.164:3478?transport=udp',
+    }, {
+        'url': 'turn:45.55.61.164:3478?transport=tcp',
+    }]
 };
 
 var sdpConstraints = {
@@ -100,12 +106,15 @@ var sdpConstraints = {
     }
 }
 
-function connect(room){
+function connect(room) {
     // create peer connection
     localPeerConnection = new RTCPeerConnection(server);
 
     // create local data channel, send it to remote
-    navigator.getUserMedia({ video: true, audio: true }, function(stream){
+    navigator.getUserMedia({
+        video: true,
+        audio: true
+    }, function(stream) {
         // get and save local stream
         trace('Got stream, saving it now and starting RTC conn');
 
@@ -123,47 +132,51 @@ function connect(room){
     }, errorHandler)
 }
 
-function establishRTCConnection(room){
+function establishRTCConnection(room) {
     // create signalling server
     signallingServer = new SignallingServer(room, serverIP);
     signallingServer.connect();
 
 
     // a remote peer has joined room, initiate sdp exchange
-    signallingServer.onGuestJoined = function(){
+    signallingServer.onGuestJoined = function() {
         trace('guest joined!')
         // set local description and send to remote
-        localPeerConnection.createOffer(function(sessionDescription){
+        localPeerConnection.createOffer(function(sessionDescription) {
             trace('set local session desc with offer');
 
             localPeerConnection.setLocalDescription(sessionDescription);
-            
+
             // send local sdp to remote
             signallingServer.sendSDP(sessionDescription);
         });
     }
 
     // got sdp from remote
-    signallingServer.onReceiveSdp = function(sdp){
+    signallingServer.onReceiveSdp = function(sdp) {
         // get stream again
         localPeerConnection.addStream(localStream);
         trace(localStream)
 
         // if local was the caller, set remote desc
-        if(localIsCaller){
+        if (localIsCaller) {
             trace('is caller');
             trace('set remote session desc with answer');
-            localPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
+            localPeerConnection.setRemoteDescription(new RTCSessionDescription(
+                sdp));
         }
         // if local is joining a call, set remote sdp and create answer
-        else{
+        else {
             trace('set remote session desc with offer');
-            localPeerConnection.setRemoteDescription(new RTCSessionDescription(sdp), function(){
+            localPeerConnection.setRemoteDescription(new RTCSessionDescription(
+                sdp), function() {
                 trace('make answer')
-                localPeerConnection.createAnswer(function(sessionDescription){
+                localPeerConnection.createAnswer(function(
+                    sessionDescription) {
                     // set local description
                     trace('set local session desc with answer');
-                    localPeerConnection.setLocalDescription(sessionDescription);
+                    localPeerConnection.setLocalDescription(
+                        sessionDescription);
 
                     // send local sdp to remote too
                     signallingServer.sendSDP(sessionDescription);
@@ -173,22 +186,21 @@ function establishRTCConnection(room){
     }
 
     // when received ICE candidate
-    signallingServer.onReceiveICECandidate = function(candidate){
+    signallingServer.onReceiveICECandidate = function(candidate) {
         trace('Set remote ice candidate');
         localPeerConnection.addIceCandidate(new RTCIceCandidate(candidate));
     }
 
     // when room is full, alert user
-    signallingServer.onRoomFull = function(room){
-        window.alert('Room "' + room + '"" is full! Please join or create another room');
+    signallingServer.onRoomFull = function(room) {
+        window.alert('Room "' + room +
+            '"" is full! Please join or create another room');
     }
 
     // get ice candidates and send them over
     // wont get called unless SDP has been exchanged
-    localPeerConnection.onicecandidate = function(event){
-        trace('heard back from stun')
-        trace(event)
-        if(event.candidate){
+    localPeerConnection.onicecandidate = function(event) {
+        if (event.candidate) {
             //!!! send ice candidate over via signalling channel
             trace("Sending candidate");
             signallingServer.sendICECandidate(event.candidate);
@@ -196,17 +208,17 @@ function establishRTCConnection(room){
     }
 
     // when stream is added to connection, put it in video src
-    localPeerConnection.onaddstream = function(data){
+    localPeerConnection.onaddstream = function(data) {
         remoteVideo.src = window.URL.createObjectURL(data.stream);
     }
-    
+
 }
 
-function errorHandler(error){
+function errorHandler(error) {
     console.error('Something went wrong!');
     console.error(error);
 }
 
-function trace(text){
+function trace(text) {
     console.info(text);
 }
