@@ -94,12 +94,13 @@ var server = {
         "url": "stun:stun.l.google.com:19302"
     }, 
     {
-        'url': 'turn:piratefsh@45.55.61.164:3478?transport=udp',
-        'credential': 'password'
-    }, {
-        'url': 'turn:piratefsh@45.55.61.164:3478?transport=tcp',
+        'url': 'turn:piratefsh@45.55.61.164:3478',
         'credential': 'password'
     }
+    // , {
+    //     'url': 'turn:piratefsh@45.55.61.164:3478?transport=tcp',
+    //     'credential': 'password'
+    // }
     ]
 };
 
