@@ -94,8 +94,12 @@ var server = {
         "url": "stun:45.55.61.164:3478"
     }, {
         'url': 'turn:45.55.61.164:3478?transport=udp',
+        'username': 'piratefsh',
+        'credential': '0xacf9a3643d07595b23cd680a27ad8c68'
     }, {
         'url': 'turn:45.55.61.164:3478?transport=tcp',
+        'username': 'piratefsh',
+        'credential': '0xacf9a3643d07595b23cd680a27ad8c68'
     }]
 };
 
