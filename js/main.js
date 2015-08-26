@@ -89,19 +89,15 @@ window.SignallingServer = window.SignallingServer;
 
 // RTCPeerConnection Options
 var server = {
-    // User Google's STUN server
+    // Uses Google's STUN server
     iceServers: [{
         "url": "stun:stun.l.google.com:19302"
     }, 
     {
+    // Use my TURN server on DigitalOcean
         'url': 'turn:piratefsh@45.55.61.164',
         'credential': 'password'
-    }
-    // , {
-    //     'url': 'turn:piratefsh@45.55.61.164:3478?transport=tcp',
-    //     'credential': 'password'
-    // }
-    ]
+    }]
 };
 
 var sdpConstraints = {
