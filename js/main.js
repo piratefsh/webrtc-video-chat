@@ -91,16 +91,16 @@ window.SignallingServer = window.SignallingServer;
 var server = {
     // User Google's STUN server
     iceServers: [{
-        "url": "stun:45.55.61.164:3478"
-    }, {
-        'url': 'turn:45.55.61.164:3478?transport=udp',
-        'username': 'piratefsh',
-        'credential': '0xacf9a3643d07595b23cd680a27ad8c68'
-    }, {
-        'url': 'turn:45.55.61.164:3478?transport=tcp',
-        'username': 'piratefsh',
-        'credential': '0xacf9a3643d07595b23cd680a27ad8c68'
-    }]
+        "url": "stun:stun.l.google.com:19302"
+    }, 
+    // {
+    //     'url': 'turn:piratefsh@45.55.61.164:3478?transport=udp',
+    //     'credential': '0xacf9a3643d07595b23cd680a27ad8c68'
+    // }, {
+    //     'url': 'turn:piratefsh@45.55.61.164:3478?transport=tcp',
+    //     'credential': '0xacf9a3643d07595b23cd680a27ad8c68'
+    // }
+    ]
 };
 
 var sdpConstraints = {
