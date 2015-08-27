@@ -8,6 +8,18 @@
 //my signalling server
 var serverIP = "http://45.55.61.164:2013/";
 
+// RTCPeerConnection Options
+var server = {
+    // Uses Google's STUN server
+    iceServers: [{
+        "url": "stun:piratefsh@45.55.61.164"
+    }, 
+    {
+    // Use my TURN server on DigitalOcean
+        'url': 'turn:piratefsh@45.55.61.164',
+        'credential': 'password'
+    }]
+};
 // various other development IPs
 // var serverIP = "http://192.168.43.241:2013";
 // var serverIP = "http://10.0.11.196:2013";
@@ -86,19 +98,6 @@ window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSess
 navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia ||
     navigator.webkitGetUserMedia || navigator.msGetUserMedia;
 window.SignallingServer = window.SignallingServer;
-
-// RTCPeerConnection Options
-var server = {
-    // Uses Google's STUN server
-    iceServers: [{
-        "url": "stun:stun.l.google.com:19302"
-    }, 
-    {
-    // Use my TURN server on DigitalOcean
-        'url': 'turn:piratefsh@45.55.61.164',
-        'credential': 'password'
-    }]
-};
 
 var sdpConstraints = {
     optional: [],
