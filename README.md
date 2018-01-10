@@ -1,3 +1,5 @@
+# THIS PROJECT IS NO LONGER MAINTAINED. PLEASE DO NOT OPEN NEW ISSUES.
+
 # WebRTC chat client and signalling server
 
 Video only for now. Build on webRTC technology for the video streaming.
